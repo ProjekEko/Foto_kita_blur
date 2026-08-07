@@ -897,7 +897,7 @@ export default function MulaiPage() {
                                 </div>
 
                                 <div className="recording-footer">
-                                    dibuat dengan sedikit cinta oleh
+                                    Dibuat Oleh
                                     <strong> Eko Haryadi</strong>
                                 </div>
 
@@ -929,7 +929,7 @@ export default function MulaiPage() {
 
                     {showEditor && (
                         <footer className="text-center mt-[25px] text-[14px] font-medium text-[#8d857e]">
-                            Buatan <strong className="text-[#4b4b4b] font-semibold">Eko Haryadi</strong>
+                            Dibuat Oleh <strong className="text-[#4b4b4b] font-semibold">Eko Haryadi</strong>
                         </footer>
                     )}
                 </div>
