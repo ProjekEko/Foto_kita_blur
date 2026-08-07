@@ -1,0 +1,2108 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Foto Kita Blur - Photo Booth 2026</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #f7f3f0;
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 25px;
+        color: #222;
+      }
+
+      .wrapper {
+        max-width: 1320px;
+        margin: auto;
+      }
+
+      /* =====================================================
+       HEADER
+      ===================================================== */
+
+      .header {
+        background: #fff;
+        border-radius: 20px;
+        padding: 18px 28px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .sebelah-kiri-ujung {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #d9d0c8;
+      }
+
+      .brand-name {
+        font-size: 22px;
+        font-weight: 600;
+      }
+
+      .sebelah-kanan-ujung {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .header-button {
+        padding: 10px 20px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+      }
+
+      .header-button:hover {
+        transform: scale(1.02);
+        opacity: 0.9;
+      }
+
+      .restart {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .download {
+        background: #222;
+        color: white;
+      }
+
+      /* =====================================================
+       EDITOR
+      ===================================================== */
+
+      .editor {
+        display: flex;
+        gap: 25px;
+        align-items: flex-start;
+      }
+
+      .preview-section {
+        flex: 6;
+        min-width: 0;
+      }
+
+      .preview-main {
+        height: 650px;
+        background: #ddd6cf;
+        border-radius: 24px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 18px;
+        position: relative;
+        padding: 20px;
+      }
+
+      /* =====================================================
+       PHOTO STRIP - BASE
+      ===================================================== */
+
+      .photo-strip {
+        width: 230px;
+        height: 610px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        transition: all 0.4s ease;
+        overflow: hidden;
+        flex-shrink: 0;
+        --frame-color: #ffffff;
+        --accent-color: #8f4d62;
+        --photo-filter: none;
+        --caption-font: Georgia, serif;
+        animation: boothAppear 0.45s ease;
+      }
+
+      @keyframes boothAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.94) translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .photo {
+        width: 100%;
+        height: 155px;
+        object-fit: cover;
+        display: block;
+        transition:
+          filter 0.5s ease,
+          transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        filter: var(--photo-filter);
+      }
+
+      .photo-area {
+        position: relative;
+        z-index: 3;
+        transition:
+          border-color 0.35s ease,
+          box-shadow 0.35s ease,
+          transform 0.35s ease;
+        border-color: var(--frame-color) !important;
+      }
+
+      .photo-area::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05),
+          transparent 35%,
+          rgba(0, 0, 0, 0.04)
+        );
+      }
+
+      /* =====================================================
+       LAYOUT: CLASSIC STRIP
+      ===================================================== */
+
+      .layout-classic-strip .photo {
+        height: 155px;
+      }
+      .layout-classic-strip .photo-area {
+        margin-bottom: 6px;
+      }
+
+      /* =====================================================
+       LAYOUT: L-SHAPE
+      ===================================================== */
+
+      .layout-lshape {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        width: 460px !important;
+        height: 460px !important;
+        padding: 12px;
+        gap: 6px;
+      }
+      .layout-lshape .photo-area:first-child {
+        width: 65% !important;
+        height: 100% !important;
+      }
+      .layout-lshape .photo-area:first-child .photo {
+        height: 100% !important;
+        width: 100% !important;
+      }
+      .layout-lshape .photo-right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 32% !important;
+        height: 100% !important;
+      }
+      .layout-lshape .photo-right-column .photo-area {
+        height: 48% !important;
+        width: 100% !important;
+      }
+      .layout-lshape .photo-right-column .photo-area .photo {
+        height: 100% !important;
+        width: 100% !important;
+      }
+      .layout-lshape .floral-top,
+      .layout-lshape .retro-header,
+      .layout-lshape .candy-header,
+      .layout-lshape .midnight-header,
+      .layout-lshape .floral-bottom,
+      .layout-lshape .retro-footer,
+      .layout-lshape .candy-footer,
+      .layout-lshape .midnight-footer {
+        display: none !important;
+      }
+
+      /* =====================================================
+       LAYOUT: POLAROID STACK
+      ===================================================== */
+
+      .layout-polaroid {
+        padding: 20px 12px;
+        gap: 0px;
+        position: relative;
+      }
+      .layout-polaroid .photo-area {
+        margin-bottom: -50px;
+        position: relative;
+        padding: 8px 8px 30px 8px;
+        background: white;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transform-origin: center;
+        width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+        border-color: var(--frame-color) !important;
+      }
+      .layout-polaroid .photo-area:nth-child(1) {
+        transform: rotate(-6deg) translateY(10px);
+        z-index: 3;
+      }
+      .layout-polaroid .photo-area:nth-child(2) {
+        transform: rotate(3deg) translateY(-5px);
+        z-index: 4;
+      }
+      .layout-polaroid .photo-area:nth-child(3) {
+        transform: rotate(-4deg) translateY(-20px);
+        z-index: 5;
+      }
+      .layout-polaroid .photo-area .photo {
+        height: 120px;
+        width: 100%;
+        margin-bottom: 4px;
+      }
+      .layout-polaroid .photo-area::after {
+        content: "✦";
+        position: absolute;
+        bottom: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        opacity: 0.4;
+        letter-spacing: 4px;
+      }
+      .layout-polaroid .floral-top,
+      .layout-polaroid .retro-header,
+      .layout-polaroid .candy-header,
+      .layout-polaroid .midnight-header,
+      .layout-polaroid .floral-bottom,
+      .layout-polaroid .retro-footer,
+      .layout-polaroid .candy-footer,
+      .layout-polaroid .midnight-footer {
+        display: none !important;
+      }
+
+      /* =====================================================
+       LAYOUT: EDITORIAL
+      ===================================================== */
+
+      .layout-editorial {
+        gap: 8px;
+        padding: 15px;
+      }
+      .layout-editorial .photo-area:first-child {
+        height: 55% !important;
+      }
+      .layout-editorial .photo-area:first-child .photo {
+        height: 100% !important;
+      }
+      .layout-editorial .photo-bottom-row {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+        flex: 1;
+      }
+      .layout-editorial .photo-bottom-row .photo-area {
+        height: 100% !important;
+        width: 48% !important;
+      }
+      .layout-editorial .photo-bottom-row .photo-area .photo {
+        height: 100% !important;
+        width: 100% !important;
+      }
+      .layout-editorial .floral-top,
+      .layout-editorial .retro-header,
+      .layout-editorial .candy-header,
+      .layout-editorial .midnight-header,
+      .layout-editorial .floral-bottom,
+      .layout-editorial .retro-footer,
+      .layout-editorial .candy-footer,
+      .layout-editorial .midnight-footer {
+        display: none !important;
+      }
+
+      /* =====================================================
+       BOOTH CAPTION - SISTEM TERINTEGRASI
+      ===================================================== */
+
+      .booth-caption {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        color: var(--accent-color);
+        padding: 7px 10px 3px;
+        font-family: var(--caption-font);
+        font-size: 15px;
+        letter-spacing: 1.5px;
+        line-height: 1.2;
+        transition:
+          color 0.35s ease,
+          opacity 0.35s ease,
+          transform 0.35s ease;
+      }
+
+      .booth-caption.empty {
+        opacity: 0.45;
+      }
+
+      .style-midnight .booth-caption {
+        color: var(--frame-color);
+        text-shadow: 0 0 14px
+          color-mix(in srgb, var(--frame-color) 45%, transparent);
+      }
+
+      .style-retro .booth-caption {
+        font-family: Arial, Helvetica, sans-serif;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+
+      .style-candy .booth-caption {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 800;
+      }
+
+      .style-floral .booth-caption {
+        font-style: italic;
+      }
+
+      .layout-editorial .booth-caption {
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-top: 5px;
+        border-top: 1px solid
+          color-mix(in srgb, var(--accent-color) 25%, transparent);
+      }
+
+      /* =====================================================
+       COVER STYLES
+      ===================================================== */
+
+      /* FLORAL */
+      .style-floral {
+        background:
+          radial-gradient(circle at 15% 10%, #ffd6df 0 12px, transparent 13px),
+          radial-gradient(circle at 85% 12%, #f9b8ca 0 10px, transparent 11px),
+          linear-gradient(180deg, #fff9fa, #fff0f4);
+        border: 7px solid var(--frame-color, #fff);
+        box-shadow: 0 20px 45px rgba(100, 50, 70, 0.18);
+        --accent-color: #8f4d62;
+      }
+      .style-floral .photo-area {
+        border: 4px solid var(--frame-color, #fff);
+        margin-bottom: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      }
+      .style-floral .photo {
+        height: 155px;
+      }
+      .style-floral .floral-top {
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Georgia, serif;
+        font-size: 17px;
+        font-style: italic;
+        color: var(--accent-color);
+        position: relative;
+        z-index: 5;
+      }
+      .style-floral .floral-bottom {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: var(--accent-color);
+        text-align: center;
+        position: relative;
+        z-index: 5;
+      }
+      .style-floral .floral-bottom .main {
+        font-family: Georgia, serif;
+        font-size: 20px;
+        font-style: italic;
+      }
+      .style-floral .floral-bottom .small {
+        font-size: 8px;
+        letter-spacing: 2px;
+        margin-top: 5px;
+      }
+      .style-floral .flower {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, #f7b6c8 0 7px, transparent 8px),
+          conic-gradient(
+            #f6b3c4 0deg 72deg,
+            transparent 72deg 144deg,
+            #f6b3c4 144deg 216deg,
+            transparent 216deg 288deg,
+            #f6b3c4 288deg
+          );
+        opacity: 0.9;
+      }
+      .style-floral .flower.one {
+        left: -5px;
+        top: 5px;
+      }
+      .style-floral .flower.two {
+        right: -5px;
+        bottom: 10px;
+        transform: scale(0.8);
+      }
+
+      /* =====================================================
+       RETRO FILM - TANPA GARIS DEKORATIF
+      ===================================================== */
+
+      .style-retro {
+        background: #f2eadb;
+        border: 8px solid var(--frame-color, #191919);
+        border-radius: 6px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+        --accent-color: #252525;
+      }
+
+      /* HAPUS GARIS DEKORATIF ATAS & BAWAH */
+      .style-retro::before,
+      .style-retro::after {
+        display: none !important;
+      }
+
+      .style-retro .photo-area {
+        border: 3px solid var(--frame-color, #222);
+        margin-bottom: 6px;
+        position: relative;
+      }
+
+      .style-retro .photo {
+        height: 155px;
+      }
+
+      .style-retro .retro-header {
+        height: 38px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 4px;
+        font-size: 8px;
+        letter-spacing: 2px;
+        color: #333;
+        position: relative;
+        z-index: 5;
+      }
+
+      .style-retro .retro-footer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        z-index: 5;
+      }
+
+      .style-retro .retro-footer .title {
+        font-family: Georgia, serif;
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .style-retro .retro-footer .sub {
+        font-size: 7px;
+        letter-spacing: 2px;
+        margin-top: 7px;
+      }
+
+      /* CANDY */
+      .style-candy {
+        background:
+          radial-gradient(circle at 10% 10%, #ffb7d0 0 7px, transparent 8px),
+          radial-gradient(circle at 90% 20%, #c9b6ff 0 8px, transparent 9px),
+          radial-gradient(circle at 15% 85%, #a8e6cf 0 7px, transparent 8px),
+          linear-gradient(180deg, #fff8fc, #f4efff);
+        border: 5px solid var(--frame-color, #fff);
+        box-shadow: 0 20px 45px rgba(117, 75, 130, 0.2);
+        --accent-color: #7f5a94;
+      }
+      .style-candy .photo-area {
+        border: 5px solid var(--frame-color, #fff);
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 7px;
+        box-shadow: 0 5px 15px rgba(80, 50, 90, 0.12);
+      }
+      .style-candy .photo {
+        height: 150px;
+      }
+      .style-candy .candy-header {
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--accent-color);
+        position: relative;
+        z-index: 5;
+      }
+      .style-candy .candy-footer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 5;
+        color: #73527f;
+      }
+      .style-candy .candy-footer .title {
+        font-size: 18px;
+        font-weight: 800;
+      }
+      .style-candy .candy-footer .sub {
+        font-size: 8px;
+        letter-spacing: 2px;
+        margin-top: 5px;
+      }
+      .style-candy .sparkle {
+        position: absolute;
+        color: #c99cff;
+        font-size: 22px;
+        z-index: 4;
+      }
+      .style-candy .sparkle.one {
+        top: 18px;
+        left: 12px;
+      }
+      .style-candy .sparkle.two {
+        right: 10px;
+        bottom: 40px;
+      }
+
+      /* MIDNIGHT */
+      .style-midnight {
+        background:
+          radial-gradient(
+            circle at 50% 10%,
+            rgba(125, 95, 255, 0.45),
+            transparent 35%
+          ),
+          linear-gradient(180deg, #141225, #08080d);
+        border: 4px solid var(--frame-color, #28254a);
+        box-shadow: 0 20px 50px rgba(30, 20, 70, 0.4);
+        --accent-color: #ffffff;
+      }
+      .style-midnight .photo-area {
+        border: 2px solid var(--frame-color, rgba(255, 255, 255, 0.6));
+        margin-bottom: 7px;
+        box-shadow: 0 0 18px rgba(150, 120, 255, 0.15);
+      }
+      .style-midnight .photo {
+        height: 152px;
+      }
+      .style-midnight .midnight-header {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        position: relative;
+        z-index: 5;
+      }
+      .style-midnight .midnight-footer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        position: relative;
+        z-index: 5;
+      }
+      .style-midnight .midnight-footer .title {
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .style-midnight .midnight-footer .sub {
+        font-size: 7px;
+        letter-spacing: 3px;
+        opacity: 0.6;
+        margin-top: 7px;
+      }
+      .style-midnight .star {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 0 10px white;
+        z-index: 2;
+      }
+      .style-midnight .star.s1 {
+        top: 35px;
+        left: 18px;
+      }
+      .style-midnight .star.s2 {
+        top: 110px;
+        right: 15px;
+      }
+      .style-midnight .star.s3 {
+        bottom: 80px;
+        left: 12px;
+      }
+      .style-midnight .star.s4 {
+        bottom: 30px;
+        right: 20px;
+      }
+
+      /* =====================================================
+       FILTER INDICATOR
+      ===================================================== */
+
+      .photo-strip[data-filter-name]::after {
+        content: attr(data-filter-name);
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        z-index: 20;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.45);
+        color: white;
+        font-size: 7px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        backdrop-filter: blur(6px);
+        opacity: 0.65;
+      }
+
+      /* =====================================================
+       SIDEBAR
+      ===================================================== */
+
+      .sidebar {
+        flex: 4;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 280px;
+      }
+
+      .side-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+      }
+
+      .side-card h5 {
+        margin-bottom: 18px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .option-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      /* =====================================================
+       LAYOUT OPTION PREVIEW
+      ===================================================== */
+
+      .layout-option {
+        height: 110px;
+        border-radius: 16px;
+        background: #ece6e0;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.25s ease;
+        border: 2px solid transparent;
+        padding: 6px;
+        user-select: none;
+      }
+
+      .layout-option:hover {
+        transform: translateY(-2px);
+        background: #ddd6cf;
+      }
+
+      .layout-option.active {
+        border-color: #222;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        background: #d5cdc5;
+        transform: translateY(-2px);
+      }
+
+      .layout-option .mini-layout {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        gap: 3px;
+        padding: 4px;
+        background: white;
+        border-radius: 8px;
+        pointer-events: none;
+      }
+
+      .layout-option .mini-layout .mini-photo-box {
+        background: #d9d0c8;
+        border-radius: 3px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 7px;
+        color: #999;
+        font-weight: 600;
+        min-height: 20px;
+      }
+
+      .layout-option .mini-layout.classic-strip-preview {
+        flex-direction: column;
+      }
+
+      .layout-option .mini-layout.lshape-preview {
+        flex-direction: row;
+      }
+      .layout-option .mini-layout.lshape-preview .mini-photo-box:first-child {
+        flex: 2;
+      }
+      .layout-option .mini-layout.lshape-preview .mini-right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex: 1;
+      }
+      .layout-option
+        .mini-layout.lshape-preview
+        .mini-right-col
+        .mini-photo-box {
+        flex: 1;
+      }
+
+      .layout-option .mini-layout.polaroid-preview {
+        flex-direction: column;
+        gap: 1px;
+        padding: 8px 4px;
+        background: transparent;
+      }
+      .layout-option .mini-layout.polaroid-preview .mini-photo-box {
+        height: 20px;
+        transform: rotate(var(--rot, 0deg));
+        margin-bottom: -8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        background: white;
+        padding: 2px;
+      }
+      .layout-option
+        .mini-layout.polaroid-preview
+        .mini-photo-box:nth-child(1) {
+        --rot: -4deg;
+      }
+      .layout-option
+        .mini-layout.polaroid-preview
+        .mini-photo-box:nth-child(2) {
+        --rot: 2deg;
+      }
+      .layout-option
+        .mini-layout.polaroid-preview
+        .mini-photo-box:nth-child(3) {
+        --rot: -3deg;
+      }
+      .layout-option
+        .mini-layout.polaroid-preview
+        .mini-photo-box
+        .mini-photo-box-inner {
+        background: #d9d0c8;
+        height: 100%;
+        width: 100%;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5px;
+        color: #999;
+      }
+
+      .layout-option .mini-layout.editorial-preview {
+        flex-direction: column;
+      }
+      .layout-option
+        .mini-layout.editorial-preview
+        .mini-photo-box:first-child {
+        flex: 2;
+      }
+      .layout-option .mini-layout.editorial-preview .mini-bottom-row {
+        display: flex;
+        gap: 3px;
+        flex: 1;
+      }
+      .layout-option
+        .mini-layout.editorial-preview
+        .mini-bottom-row
+        .mini-photo-box {
+        flex: 1;
+      }
+      .layout-option .mini-layout.editorial-preview .mini-text-bar {
+        height: 6px;
+        background: #ddd;
+        margin-top: 2px;
+        border-radius: 2px;
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .layout-option .option-label {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 4px;
+        text-align: center;
+        font-size: 9px;
+        font-weight: 600;
+        color: #555;
+        pointer-events: none;
+      }
+
+      /* =====================================================
+       COVER OPTION PREVIEW - TEXT ONLY
+      ===================================================== */
+
+      .cover-option {
+        height: 130px;
+        border-radius: 16px;
+        background: #ece6e0;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.25s ease;
+        border: 2px solid transparent;
+        padding: 4px;
+        user-select: none;
+      }
+
+      .cover-option:hover {
+        transform: translateY(-2px);
+        background: #ddd6cf;
+      }
+
+      .cover-option.active {
+        border-color: #222;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        background: #d5cdc5;
+        transform: translateY(-2px);
+      }
+
+      .cover-option .mini-strip {
+        width: 82px;
+        height: 108px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        pointer-events: none;
+        border-radius: 8px;
+        padding: 8px;
+        transition: all 0.25s ease;
+      }
+
+      .cover-option .mini-title {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        font-size: 9px;
+        line-height: 1.3;
+        text-align: center;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      /* =========================
+         BLOOM
+      ========================= */
+
+      .mini-floral {
+        background: linear-gradient(180deg, #fff9fa, #fff0f4);
+        border: 2px solid #ffffff;
+        box-shadow: 0 5px 14px rgba(100, 50, 70, 0.12);
+        color: #8f4d62;
+      }
+
+      .mini-floral .mini-title {
+        font-family: Georgia, serif;
+        font-style: italic;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+      }
+
+      .mini-floral .mini-title::before {
+        content: "✦";
+        font-size: 9px;
+        margin-bottom: 8px;
+        opacity: 0.7;
+      }
+
+      .mini-floral .mini-title::after {
+        content: "FOTO KITA BLUR";
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 5px;
+        letter-spacing: 1px;
+        margin-top: 8px;
+        font-style: normal;
+        opacity: 0.6;
+      }
+
+      /* =========================
+         RETRO FILM
+      ========================= */
+
+      .mini-retro {
+        background: #f2eadb;
+        border: 2px solid #191919;
+        border-radius: 4px;
+        color: #252525;
+      }
+
+      .mini-retro .mini-title {
+        font-family: Georgia, serif;
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+
+      .mini-retro .mini-title::before {
+        content: "PHOTO BOOTH";
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 5px;
+        letter-spacing: 1.5px;
+        margin-bottom: 9px;
+      }
+
+      .mini-retro .mini-title::after {
+        content: "NO. 003";
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 5px;
+        letter-spacing: 1px;
+        margin-top: 8px;
+      }
+
+      /* =========================
+         CANDY
+      ========================= */
+
+      .mini-candy {
+        background: linear-gradient(180deg, #fff8fc, #f1ecff);
+        border: 2px solid #ffffff;
+        border-radius: 10px;
+        color: #7f5a94;
+        box-shadow: 0 5px 14px rgba(117, 75, 130, 0.12);
+      }
+
+      .mini-candy .mini-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+
+      .mini-candy .mini-title::before {
+        content: "✦";
+        font-size: 10px;
+        margin-bottom: 7px;
+      }
+
+      .mini-candy .mini-title::after {
+        content: "SWEET MOMENTS";
+        font-size: 5px;
+        letter-spacing: 1px;
+        margin-top: 8px;
+        opacity: 0.7;
+      }
+
+      /* =========================
+         MIDNIGHT
+      ========================= */
+
+      .mini-midnight {
+        background:
+          radial-gradient(
+            circle at 50% 15%,
+            rgba(125, 95, 255, 0.4),
+            transparent 35%
+          ),
+          linear-gradient(180deg, #17152d, #07070b);
+        border: 2px solid #302b5c;
+        color: #ffffff;
+        box-shadow: 0 5px 16px rgba(30, 20, 70, 0.25);
+      }
+
+      .mini-midnight .mini-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .mini-midnight .mini-title::before {
+        content: "✦";
+        font-size: 9px;
+        margin-bottom: 8px;
+      }
+
+      .mini-midnight .mini-title::after {
+        content: "PHOTO NIGHT";
+        font-size: 5px;
+        letter-spacing: 2px;
+        margin-top: 8px;
+        opacity: 0.55;
+      }
+
+      .cover-option .option-label {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 4px;
+        text-align: center;
+        font-size: 9px;
+        font-weight: 600;
+        color: #555;
+        pointer-events: none;
+      }
+
+      /* =====================================================
+       FILTER OPTION
+      ===================================================== */
+
+      .filter-option {
+        height: 70px;
+        border-radius: 16px;
+        background: #ece6e0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        border: 2px solid transparent;
+        color: #555;
+        user-select: none;
+      }
+
+      .filter-option:hover {
+        transform: translateY(-2px);
+        background: #ddd6cf;
+      }
+
+      .filter-option.active {
+        border-color: #222;
+        background: #d5cdc5;
+        color: #222;
+        transform: translateY(-2px);
+      }
+
+      /* =====================================================
+       BOTTOM TOOLS
+      ===================================================== */
+
+      .bottom-tools {
+        display: flex;
+        gap: 18px;
+      }
+
+      .frame-box,
+      .caption-box {
+        flex: 1;
+        background: white;
+        border-radius: 18px;
+        padding: 14px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+        min-width: 0;
+      }
+
+      .frame-box h6,
+      .caption-box h6 {
+        margin-bottom: 10px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .color-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .color {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+        position: relative;
+        user-select: none;
+      }
+
+      .color:hover {
+        transform: scale(1.1);
+      }
+
+      .color.active {
+        border-color: #222;
+        box-shadow:
+          0 0 0 2px white,
+          0 0 0 4px #222;
+      }
+
+      .color::after {
+        content: attr(data-name);
+        position: absolute;
+        left: 50%;
+        bottom: -19px;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        font-size: 8px;
+        color: #888;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .color:hover::after {
+        opacity: 1;
+      }
+
+      .caption-box textarea {
+        width: 100%;
+        height: 80px;
+        resize: none;
+        border: none;
+        outline: none;
+        background: #f7f3f0;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-family: inherit;
+        font-size: 14px;
+        transition:
+          background 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+
+      .caption-box textarea:focus {
+        background: #fff;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+      }
+
+      .caption-presets {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        margin-top: 9px;
+      }
+
+      .caption-preset {
+        border: 1px solid #ddd5ce;
+        background: #f8f5f2;
+        color: #555;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        font-family: inherit;
+      }
+
+      .caption-preset:hover {
+        transform: translateY(-1px);
+        background: #eee8e2;
+      }
+
+      .caption-preset.active {
+        background: #222;
+        color: white;
+        border-color: #222;
+      }
+
+      /* =====================================================
+       FOOTER
+      ===================================================== */
+
+      .footer {
+        margin-top: 25px;
+        text-align: center;
+        color: #8e857d;
+        font-size: 14px;
+      }
+
+      .footer strong {
+        color: #444;
+      }
+
+      /* =====================================================
+       RESPONSIVE
+      ===================================================== */
+
+      @media (max-width: 992px) {
+        .editor {
+          flex-direction: column;
+        }
+        .preview-section,
+        .sidebar {
+          width: 100%;
+        }
+        .sidebar {
+          min-width: unset;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .sebelah-kanan-ujung {
+          width: 100%;
+        }
+        .header-button {
+          flex: 1;
+          text-align: center;
+        }
+        .preview-main {
+          height: 500px;
+        }
+        .bottom-tools {
+          flex-direction: column;
+        }
+        .photo-strip {
+          transform: scale(0.7);
+        }
+        .layout-lshape {
+          transform: scale(0.5);
+        }
+        .option-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 500px) {
+        .photo-strip {
+          transform: scale(0.55);
+        }
+        .layout-lshape {
+          transform: scale(0.4);
+        }
+        .preview-main {
+          height: 400px;
+          padding: 10px;
+        }
+        .option-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+        }
+        .layout-option {
+          height: 80px;
+        }
+        .cover-option {
+          height: 100px;
+        }
+        .side-card {
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <!-- =====================================================
+       HEADER
+      ===================================================== -->
+
+      <div class="header">
+        <div class="sebelah-kiri-ujung">
+          <div class="logo-icon"></div>
+          <div class="brand-name">Foto Kita Blur</div>
+        </div>
+        <div class="sebelah-kanan-ujung">
+          <div class="header-button restart">Mulai Ulang Rekaman</div>
+          <div class="header-button download">Download Foto</div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+       CONTENT
+      ===================================================== -->
+
+      <div class="editor">
+        <!-- ===================================================
+         LEFT - PREVIEW
+        =================================================== -->
+
+        <div class="preview-section">
+          <div class="preview-main">
+            <!-- PHOTO STRIP -->
+            <div
+              id="photoStrip"
+              class="photo-strip style-floral layout-classic-strip"
+            >
+              <!-- AKAN DIISI JAVASCRIPT -->
+            </div>
+          </div>
+
+          <!-- =================================================
+           BOTTOM TOOLS
+          ================================================= -->
+
+          <div class="bottom-tools">
+            <div class="frame-box">
+              <h6>Warna Frame</h6>
+              <div class="color-list">
+                <div
+                  class="color active"
+                  style="background: #ffffff; border: 1px solid #ddd"
+                  data-color="#ffffff"
+                  data-name="White"
+                ></div>
+                <div
+                  class="color"
+                  style="background: #171717"
+                  data-color="#171717"
+                  data-name="Black"
+                ></div>
+                <div
+                  class="color"
+                  style="background: #f3c6d3"
+                  data-color="#f3c6d3"
+                  data-name="Blush"
+                ></div>
+                <div
+                  class="color"
+                  style="background: #d9b8a7"
+                  data-color="#d9b8a7"
+                  data-name="Latte"
+                ></div>
+                <div
+                  class="color"
+                  style="background: #e7c76b"
+                  data-color="#e7c76b"
+                  data-name="Champagne"
+                ></div>
+                <div
+                  class="color"
+                  style="background: #b7a5e6"
+                  data-color="#b7a5e6"
+                  data-name="Lavender"
+                ></div>
+                <div
+                  class="color"
+                  style="background: #9fc7d9"
+                  data-color="#9fc7d9"
+                  data-name="Sky"
+                ></div>
+                <div
+                  class="color"
+                  style="background: #9cc9b0"
+                  data-color="#9cc9b0"
+                  data-name="Sage"
+                ></div>
+              </div>
+            </div>
+            <div class="caption-box">
+              <h6>Caption</h6>
+              <textarea
+                id="captionInput"
+                placeholder="Tulis caption..."
+                maxlength="80"
+              ></textarea>
+              <div class="caption-presets" id="captionPresets"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================
+         RIGHT SIDEBAR
+        =================================================== -->
+
+        <div class="sidebar">
+          <!-- =================================================
+           LAYOUT - 4 PILIHAN KHUSUS 3 FOTO
+          ================================================= -->
+
+          <div class="side-card">
+            <h5>Layout</h5>
+            <div class="option-grid">
+              <!-- Classic Strip -->
+              <div class="layout-option active" data-layout="classic-strip">
+                <div class="mini-layout classic-strip-preview">
+                  <div class="mini-photo-box">1</div>
+                  <div class="mini-photo-box">2</div>
+                  <div class="mini-photo-box">3</div>
+                </div>
+                <div class="option-label">Classic Strip</div>
+              </div>
+
+              <!-- L-Shape -->
+              <div class="layout-option" data-layout="lshape">
+                <div class="mini-layout lshape-preview">
+                  <div class="mini-photo-box">1</div>
+                  <div class="mini-right-col">
+                    <div class="mini-photo-box">2</div>
+                    <div class="mini-photo-box">3</div>
+                  </div>
+                </div>
+                <div class="option-label">L-Shape</div>
+              </div>
+
+              <!-- Polaroid Stack -->
+              <div class="layout-option" data-layout="polaroid">
+                <div class="mini-layout polaroid-preview">
+                  <div class="mini-photo-box">
+                    <div class="mini-photo-box-inner">1</div>
+                  </div>
+                  <div class="mini-photo-box">
+                    <div class="mini-photo-box-inner">2</div>
+                  </div>
+                  <div class="mini-photo-box">
+                    <div class="mini-photo-box-inner">3</div>
+                  </div>
+                </div>
+                <div class="option-label">Polaroid</div>
+              </div>
+
+              <!-- Editorial -->
+              <div class="layout-option" data-layout="editorial">
+                <div class="mini-layout editorial-preview">
+                  <div class="mini-photo-box">1</div>
+                  <div class="mini-bottom-row">
+                    <div class="mini-photo-box">2</div>
+                    <div class="mini-photo-box">3</div>
+                  </div>
+                  <div class="mini-text-bar"></div>
+                </div>
+                <div class="option-label">Editorial</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================
+           COVER STYLE - 4 PILIHAN
+          ================================================= -->
+
+          <div class="side-card">
+            <h5>Cover Style</h5>
+            <div class="option-grid">
+              <!-- BLOOM -->
+              <div class="cover-option active" data-style="floral">
+                <div class="mini-strip mini-floral">
+                  <div class="mini-title">BLOOM</div>
+                </div>
+                <div class="option-label">Bloom</div>
+              </div>
+
+              <!-- RETRO FILM -->
+              <div class="cover-option" data-style="retro">
+                <div class="mini-strip mini-retro">
+                  <div class="mini-title">GOOD<br />TIMES</div>
+                </div>
+                <div class="option-label">Retro Film</div>
+              </div>
+
+              <!-- CANDY -->
+              <div class="cover-option" data-style="candy">
+                <div class="mini-strip mini-candy">
+                  <div class="mini-title">CUTE</div>
+                </div>
+                <div class="option-label">Candy</div>
+              </div>
+
+              <!-- MIDNIGHT -->
+              <div class="cover-option" data-style="midnight">
+                <div class="mini-strip mini-midnight">
+                  <div class="mini-title">NIGHT</div>
+                </div>
+                <div class="option-label">Midnight</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================
+           FILTER - PHOTO BOOTH STYLE
+          ================================================= -->
+
+          <div class="side-card">
+            <h5>Filter Foto</h5>
+            <div class="option-grid">
+              <div class="filter-option active" data-filter="normal">
+                Original
+              </div>
+              <div class="filter-option" data-filter="warm">Honey</div>
+              <div class="filter-option" data-filter="cool">Ice</div>
+              <div class="filter-option" data-filter="vintage">Film</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Buatan <strong>Eko Haryadi</strong></div>
+    </div>
+
+    <script>
+      /* ============================================================
+         FOTO KITA BLUR — PHOTO BOOTH 2026 ENGINE
+      ============================================================ */
+
+      /* ============================================================
+         PHOTO DATA
+      ============================================================ */
+
+      const photos = [
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=85",
+        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=85",
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85",
+      ];
+
+      /* ============================================================
+         BOOTH PRESETS
+         Setiap STYLE punya karakter sendiri
+      ============================================================ */
+
+      const boothPresets = {
+        floral: {
+          captions: [
+            "Our Little Moments",
+            "Beautiful Memories",
+            "Bloom Together",
+            "Made With Love",
+            "Sweet Little Things",
+          ],
+          defaultCaption: "Our Little Moments",
+          filter: "warm",
+          colors: ["#ffffff", "#f3c6d3", "#d9b8a7", "#e7c76b"],
+          label: "Bloom",
+        },
+        retro: {
+          captions: [
+            "Good Times",
+            "Keep The Moment",
+            "Photo Booth",
+            "Best Day Ever",
+            "Made To Remember",
+          ],
+          defaultCaption: "GOOD TIMES",
+          filter: "vintage",
+          colors: ["#ffffff", "#171717", "#d9b8a7", "#e7c76b"],
+          label: "Retro Film",
+        },
+        candy: {
+          captions: [
+            "Sweet Moments",
+            "Best Day",
+            "Cutie Energy",
+            "Too Cute",
+            "Just Us",
+          ],
+          defaultCaption: "SWEET MOMENTS",
+          filter: "normal",
+          colors: ["#ffffff", "#f3c6d3", "#b7a5e6", "#9fc7d9"],
+          label: "Candy",
+        },
+        midnight: {
+          captions: [
+            "Tonight Was Special",
+            "After Dark",
+            "One Night Only",
+            "Midnight Memories",
+            "Stay Up Forever",
+          ],
+          defaultCaption: "TONIGHT WAS SPECIAL",
+          filter: "cool",
+          colors: ["#ffffff", "#171717", "#b7a5e6", "#9fc7d9"],
+          label: "Midnight",
+        },
+      };
+
+      /* ============================================================
+         FILTER PRESETS
+      ============================================================ */
+
+      const filterPresets = {
+        normal: {
+          css: "none",
+          label: "Original",
+        },
+        warm: {
+          css: "sepia(.18) saturate(1.18) contrast(1.02) brightness(1.02)",
+          label: "Honey",
+        },
+        cool: {
+          css: "saturate(.88) hue-rotate(8deg) contrast(1.04) brightness(1.02)",
+          label: "Ice",
+        },
+        vintage: {
+          css: "sepia(.48) saturate(.82) contrast(.94) brightness(.98)",
+          label: "Film",
+        },
+      };
+
+      /* ============================================================
+         STATE
+      ============================================================ */
+
+      let currentStyle = "floral";
+      let currentLayout = "classic-strip";
+      let currentFilter = "warm";
+      let currentCaption = "Our Little Moments";
+      let currentColor = "#ffffff";
+
+      /* ============================================================
+         ELEMENTS
+      ============================================================ */
+
+      const strip = document.getElementById("photoStrip");
+      const captionInput = document.getElementById("captionInput");
+      const captionPresets = document.getElementById("captionPresets");
+
+      /* ============================================================
+         STYLE ACCENTS
+      ============================================================ */
+
+      const styleAccent = {
+        floral: "#8f4d62",
+        retro: "#252525",
+        candy: "#7f5a94",
+        midnight: "#ffffff",
+      };
+
+      /* ============================================================
+         CAPTION PRESETS
+      ============================================================ */
+
+      function renderCaptionPresets() {
+        const preset = boothPresets[currentStyle];
+        captionPresets.innerHTML = preset.captions
+          .map((caption) => {
+            const active =
+              caption.toLowerCase() === currentCaption.toLowerCase()
+                ? "active"
+                : "";
+            return `
+              <button type="button" class="caption-preset ${active}" data-caption="${caption}">
+                ${caption}
+              </button>
+            `;
+          })
+          .join("");
+      }
+
+      /* ============================================================
+         PHOTO HTML
+      ============================================================ */
+
+      function createPhoto(src, index) {
+        return `
+          <div class="photo-area">
+            <img class="photo" src="${src}" alt="Foto ${index + 1}" />
+          </div>
+        `;
+      }
+
+      /* ============================================================
+         HEADER
+      ============================================================ */
+
+      function getHeader() {
+        if (currentStyle === "floral") {
+          return `<div class="floral-top">✦ ${currentCaption || "Our Little Moments"} ✦</div>`;
+        }
+        if (currentStyle === "retro") {
+          return `<div class="retro-header"><span>PHOTO BOOTH</span><span>NO. 003</span></div>`;
+        }
+        if (currentStyle === "candy") {
+          return `<div class="candy-header">✦ ${currentCaption || "BEST DAY"} ✦</div>`;
+        }
+        if (currentStyle === "midnight") {
+          return `<div class="midnight-header">${currentCaption || "PHOTO NIGHT"}</div>`;
+        }
+        return "";
+      }
+
+      /* ============================================================
+         FOOTER
+      ============================================================ */
+
+      function getFooter() {
+        if (currentStyle === "floral") {
+          return `
+            <div class="floral-bottom">
+              <div class="main">${currentCaption || "Beautiful Memories"}</div>
+              <div class="small">FOTO KITA BLUR • 2026</div>
+            </div>
+          `;
+        }
+        if (currentStyle === "retro") {
+          return `
+            <div class="retro-footer">
+              <div class="title">${currentCaption || "GOOD TIMES"}</div>
+              <div class="sub">KEEP THE MOMENT</div>
+            </div>
+          `;
+        }
+        if (currentStyle === "candy") {
+          return `
+            <div class="candy-footer">
+              <div class="title">${currentCaption || "SWEET MOMENTS"}</div>
+              <div class="sub">MADE WITH LOVE</div>
+            </div>
+          `;
+        }
+        if (currentStyle === "midnight") {
+          return `
+            <div class="midnight-footer">
+              <div class="title">${currentCaption || "TONIGHT WAS SPECIAL"}</div>
+              <div class="sub">FOTO KITA BLUR</div>
+            </div>
+          `;
+        }
+        return "";
+      }
+
+      /* ============================================================
+         DECORATIONS
+      ============================================================ */
+
+      function getDecorations() {
+        if (currentStyle === "floral") {
+          return `<div class="flower one"></div><div class="flower two"></div>`;
+        }
+        if (currentStyle === "candy") {
+          return `<span class="sparkle one">✦</span><span class="sparkle two">✦</span>`;
+        }
+        if (currentStyle === "midnight") {
+          return `<span class="star s1"></span><span class="star s2"></span><span class="star s3"></span><span class="star s4"></span>`;
+        }
+        return "";
+      }
+
+      /* ============================================================
+         CAPTION ELEMENT
+      ============================================================ */
+
+      function getCaptionElement() {
+        return `
+          <div class="booth-caption ${currentCaption ? "" : "empty"}">
+            ${currentCaption || "YOUR MOMENT"}
+          </div>
+        `;
+      }
+
+      /* ============================================================
+         RENDER
+      ============================================================ */
+
+      function render() {
+        // Class
+        strip.className = `photo-strip style-${currentStyle} layout-${currentLayout}`;
+
+        // Variables
+        strip.style.setProperty("--frame-color", currentColor);
+        strip.style.setProperty("--accent-color", styleAccent[currentStyle]);
+        strip.style.setProperty(
+          "--photo-filter",
+          filterPresets[currentFilter].css,
+        );
+
+        // Filter label
+        strip.dataset.filterName = filterPresets[currentFilter].label;
+
+        // Build photos
+        const photoElements = photos.map(createPhoto).join("");
+        let html = "";
+
+        // ========================================================
+        // CLASSIC
+        // ========================================================
+
+        if (currentLayout === "classic-strip") {
+          html = `
+            ${getHeader()}
+            ${getDecorations()}
+            ${photoElements}
+            ${getFooter()}
+          `;
+        }
+
+        // ========================================================
+        // L-SHAPE
+        // ========================================================
+        else if (currentLayout === "lshape") {
+          html = `
+            <div class="photo-area">
+              <img class="photo" src="${photos[0]}" alt="Foto 1" />
+            </div>
+            <div class="photo-right-column">
+              <div class="photo-area">
+                <img class="photo" src="${photos[1]}" alt="Foto 2" />
+              </div>
+              <div class="photo-area">
+                <img class="photo" src="${photos[2]}" alt="Foto 3" />
+              </div>
+            </div>
+            ${getCaptionElement()}
+          `;
+        }
+
+        // ========================================================
+        // POLAROID
+        // ========================================================
+        else if (currentLayout === "polaroid") {
+          html = `
+            ${photoElements}
+            ${getCaptionElement()}
+          `;
+        }
+
+        // ========================================================
+        // EDITORIAL
+        // ========================================================
+        else if (currentLayout === "editorial") {
+          html = `
+            <div class="photo-area">
+              <img class="photo" src="${photos[0]}" alt="Foto 1" />
+            </div>
+            <div class="photo-bottom-row">
+              <div class="photo-area">
+                <img class="photo" src="${photos[1]}" alt="Foto 2" />
+              </div>
+              <div class="photo-area">
+                <img class="photo" src="${photos[2]}" alt="Foto 3" />
+              </div>
+            </div>
+            ${getCaptionElement()}
+          `;
+        }
+
+        // Insert
+        strip.innerHTML = html;
+
+        // Apply filter
+        strip.querySelectorAll(".photo").forEach((img) => {
+          img.style.filter = filterPresets[currentFilter].css;
+        });
+
+        // Caption presets
+        renderCaptionPresets();
+      }
+
+      /* ============================================================
+         LAYOUT
+      ============================================================ */
+
+      document.querySelectorAll(".layout-option").forEach((option) => {
+        option.addEventListener("click", () => {
+          document
+            .querySelectorAll(".layout-option")
+            .forEach((el) => el.classList.remove("active"));
+          option.classList.add("active");
+          currentLayout = option.dataset.layout;
+          render();
+        });
+      });
+
+      /* ============================================================
+         COVER STYLE
+      ============================================================ */
+
+      document.querySelectorAll(".cover-option").forEach((option) => {
+        option.addEventListener("click", () => {
+          document
+            .querySelectorAll(".cover-option")
+            .forEach((el) => el.classList.remove("active"));
+          option.classList.add("active");
+
+          currentStyle = option.dataset.style;
+          const preset = boothPresets[currentStyle];
+
+          // Auto apply preset
+          currentFilter = preset.filter;
+          currentCaption = preset.defaultCaption;
+          captionInput.value = currentCaption;
+
+          // Auto frame
+          const availableColors = preset.colors;
+          if (!availableColors.includes(currentColor)) {
+            currentColor = availableColors[0];
+          }
+
+          // Update UI
+          document.querySelectorAll(".filter-option").forEach((el) => {
+            el.classList.toggle("active", el.dataset.filter === currentFilter);
+          });
+
+          document.querySelectorAll(".color").forEach((el) => {
+            el.classList.toggle("active", el.dataset.color === currentColor);
+          });
+
+          render();
+        });
+      });
+
+      /* ============================================================
+         FILTER
+      ============================================================ */
+
+      document.querySelectorAll(".filter-option").forEach((option) => {
+        option.addEventListener("click", () => {
+          document
+            .querySelectorAll(".filter-option")
+            .forEach((el) => el.classList.remove("active"));
+          option.classList.add("active");
+          currentFilter = option.dataset.filter;
+          render();
+        });
+      });
+
+      /* ============================================================
+         CAPTION INPUT
+      ============================================================ */
+
+      captionInput.addEventListener("input", () => {
+        currentCaption = captionInput.value;
+        render();
+      });
+
+      /* ============================================================
+         CAPTION QUICK PICK
+      ============================================================ */
+
+      captionPresets.addEventListener("click", (event) => {
+        const button = event.target.closest(".caption-preset");
+        if (!button) return;
+        currentCaption = button.dataset.caption;
+        captionInput.value = currentCaption;
+        render();
+      });
+
+      /* ============================================================
+         FRAME COLOR
+      ============================================================ */
+
+      document.querySelectorAll(".color").forEach((colorEl) => {
+        colorEl.addEventListener("click", () => {
+          document
+            .querySelectorAll(".color")
+            .forEach((el) => el.classList.remove("active"));
+          colorEl.classList.add("active");
+          currentColor = colorEl.dataset.color;
+          render();
+        });
+      });
+
+      /* ============================================================
+         RESTART
+      ============================================================ */
+
+      document.querySelector(".restart").addEventListener("click", () => {
+        currentStyle = "floral";
+        currentLayout = "classic-strip";
+        currentFilter = "warm";
+        currentCaption = "Our Little Moments";
+        currentColor = "#ffffff";
+
+        captionInput.value = currentCaption;
+
+        // Update UI
+        document.querySelectorAll(".cover-option").forEach((el) => {
+          el.classList.toggle("active", el.dataset.style === "floral");
+        });
+
+        document.querySelectorAll(".layout-option").forEach((el) => {
+          el.classList.toggle("active", el.dataset.layout === "classic-strip");
+        });
+
+        document.querySelectorAll(".filter-option").forEach((el) => {
+          el.classList.toggle("active", el.dataset.filter === "warm");
+        });
+
+        document.querySelectorAll(".color").forEach((el) => {
+          el.classList.toggle("active", el.dataset.color === "#ffffff");
+        });
+
+        render();
+      });
+
+      /* ============================================================
+         DOWNLOAD
+      ============================================================ */
+
+      document.querySelector(".download").addEventListener("click", () => {
+        alert(
+          "Download engine siap setelah UI final. Akan menghasilkan PNG dari hasil booth.",
+        );
+      });
+
+      /* ============================================================
+         INITIALIZE
+      ============================================================ */
+
+      captionInput.value = currentCaption;
+      render();
+    </script>
+  </body>
+</html>
