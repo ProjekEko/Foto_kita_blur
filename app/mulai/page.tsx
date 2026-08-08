@@ -66,7 +66,13 @@ const FRAME_COLORS = [
 ];
 
 // Caption presets per style
-const CAPTION_PRESETS = { floral: [ "Just Us", "A Little Something", "For Keeps", "Soft Days", "Here & Now", ], retro: [ "Good Times", "Just Like That", "One For The Books", "Those Were The Days", "Keep This One", ], candy: [ "Just Us", "Sweet Stuff", "Good Mood", "A Little Fun", "Too Good", ], midnight: [ "After Hours", "Just Tonight", "Late Night", "One For Tonight", "Stay Awhile", ], };
+const CAPTION_PRESETS = { 
+    floral: [ "Just Us", "A Little Something", "For Keeps", "Soft Days", "Here & Now" ], 
+    retro: [ "Good Times", "Just Like That", "One For The Books", "Those Were The Days", "Keep This One" ], 
+    candy: [ "Just Us", "Sweet Stuff", "Good Mood", "A Little Fun", "Too Good" ], 
+    midnight: [ "After Hours", "Just Tonight", "Late Night", "One For Tonight", "Stay Awhile" ], 
+};
+
 export default function MulaiPage() {
     const [isRecording, setIsRecording] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -88,6 +94,9 @@ export default function MulaiPage() {
     const [selectedFrameColor, setSelectedFrameColor] = useState<string>("#ffffff");
     const [caption, setCaption] = useState("Our Little Moments");
 
+    // Camera quality state
+    const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -95,22 +104,33 @@ export default function MulaiPage() {
     const animationRef = useRef<number | null>(null);
     const capturedRef = useRef<{ [key: number]: boolean }>({});
 
+    // =====================================================
+    // CAPTURE PHOTO - FULL HD QUALITY
+    // =====================================================
     const capturePhoto = (timestamp: number) => {
         if (!videoRef.current) return;
         const video = videoRef.current;
         const canvas = document.createElement("canvas");
+        
+        // Gunakan resolusi video asli (1080p atau lebih tinggi)
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
+        
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(video, 0, 0);
-        const dataUrl = canvas.toDataURL("image/jpeg");
+        
+        // Kualitas JPEG lebih tinggi (0.95)
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
         setPhotos((prev) => [...prev, dataUrl]);
-        console.log(`📸 Foto pada ${timestamp.toFixed(1)}s`);
+        console.log(`📸 Foto ${canvas.width}x${canvas.height} pada ${timestamp.toFixed(1)}s`);
     };
 
+    // =====================================================
+    // START RECORDING - WITH HIGH QUALITY CAMERA
+    // =====================================================
     const startRecording = async () => {
         if (isRecording) return;
 
@@ -123,11 +143,28 @@ export default function MulaiPage() {
         setIsJogetMode(true);
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: 1280, height: 720 },
+            // Request camera dengan kualitas tinggi (1080p / 4K)
+            const constraints = {
+                video: {
+                    facingMode: facingMode,
+                    width: { ideal: 1920, min: 1280 },
+                    height: { ideal: 1080, min: 720 },
+                    aspectRatio: 1.7777777778,
+                    frameRate: { ideal: 30, max: 60 },
+                },
                 audio: false,
-            });
+            };
+            
+            console.log('📷 Requesting camera with constraints:', constraints);
+            
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
             streamRef.current = stream;
+            
+            // Log resolusi yang didapat
+            const track = stream.getVideoTracks()[0];
+            const settings = track.getSettings();
+            console.log(`✅ Camera active: ${settings.width}x${settings.height} @ ${settings.frameRate}fps`);
+            
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
                 await videoRef.current.play();
@@ -192,8 +229,29 @@ export default function MulaiPage() {
 
             animationRef.current = requestAnimationFrame(loop);
         } catch (err) {
-            alert("Gagal akses kamera: " + err);
-            setIsRecording(false);
+            console.error("Camera error:", err);
+            // Fallback ke resolusi lebih rendah jika gagal
+            try {
+                const fallbackStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 1280, height: 720 },
+                    audio: false,
+                });
+                streamRef.current = fallbackStream;
+                if (videoRef.current) {
+                    videoRef.current.srcObject = fallbackStream;
+                    await videoRef.current.play();
+                    setIsCameraReady(true);
+                }
+                if (audioRef.current) {
+                    audioRef.current.currentTime = 0;
+                    await audioRef.current.play();
+                }
+                setIsRecording(true);
+                // ... lanjutkan loop
+            } catch (fallbackErr) {
+                alert("Gagal akses kamera: " + err);
+                setIsRecording(false);
+            }
         }
     };
 
@@ -349,7 +407,7 @@ export default function MulaiPage() {
         );
     };
 
-    // Handle Download
+    // Handle Download - dengan kualitas lebih tinggi
     const handleDownload = () => {
         const stripElement = document.getElementById("photoStrip");
 
@@ -441,8 +499,9 @@ export default function MulaiPage() {
                     })
                 );
 
+                // Scale 4 untuk kualitas lebih tajam
                 const canvas = await html2canvas(clone, {
-                    scale: 3,
+                    scale: 4,
                     useCORS: true,
                     allowTaint: false,
                     backgroundColor: null,
@@ -495,7 +554,6 @@ export default function MulaiPage() {
                     {showEditor && (
                         <div className="editor-topbar">
                             <div className="editor-brand">
-                                {/* <div className="editor-brand-mark">✦</div> */}
                                 <div>
                                     <div className="editor-brand-name">
                                         Foto Kita Blur ✌🏻
@@ -726,9 +784,6 @@ export default function MulaiPage() {
                                         <div className="mood-title">
                                             Foto Kita Blur ✌🏻
                                         </div>
-                                        <div className="mood-subtitle">
-                                            3 jepretan, kelar kok.
-                                        </div>
                                     </div>
                                     <div className="mood-buttons">
                                         <button
@@ -788,14 +843,11 @@ export default function MulaiPage() {
 
                                         {!isCameraReady && !isRecording && (
                                             <div className="camera-start">
-                                                {/* <div className="camera-start-decoration">
-                                                    ✦
-                                                </div> */}
                                                 <div className="camera-start-emoji">
                                                     📸
                                                 </div>
                                                 <h2>
-                                                    Pas lagu nyebut “foto kita”...
+                                                    Pas lagu nyebut "foto kita"...
                                                 </h2>
                                                 <p>
                                                     Jangan lupa langsung pose yaa!
@@ -818,11 +870,6 @@ export default function MulaiPage() {
                                             </div>
                                         )}
                                     </div>
-                                    {/* <div className="camera-helper">
-                                        {isRecording
-                                            ? "Bentar lagi jepret"
-                                            : "kamera siap kapan kamu siap"}
-                                    </div> */}
                                 </div>
 
                                 <div className="memory-section">
@@ -853,22 +900,8 @@ export default function MulaiPage() {
                                                         </div>
                                                     </>
                                                 ) : (
-                                                    // <div className="memory-empty">
-                                                    //     <span>
-                                                    //         {index === 0
-                                                    //             // ? "☁️"
-                                                    //             : index === 1
-                                                    //             // ? "♡"
-                                                    //             // : "✦"
-                                                    //             }
-                                                    //     </span>
-                                                    //     <small>
-                                                    //         foto {index + 1}
-                                                    //     </small>
-                                                    // </div>
                                                     <div className="memory-empty">
                                                         <span></span>
-
                                                         <small>
                                                             foto {index + 1}
                                                         </small>
@@ -1163,7 +1196,6 @@ export default function MulaiPage() {
                     margin-bottom: 18px;
                     animation: cameraFloat 3s ease-in-out infinite;
                 }
-
 
                 @keyframes cameraFloat {
                     0%,100% { transform: translateY(0) rotate(-2deg); }
@@ -1556,13 +1588,12 @@ export default function MulaiPage() {
                 }
 
                 /* VERTICAL LAYOUT - Rapi & klasik, Kayak dulu, Agak artsy */
-                /* Tinggi dibuat hampir memenuhi preview */
                 .preview-main .photo-strip:not(.layout-lshape) {
                     transform: scale(0.86);
                     transform-origin: center center;
                 }
 
-                /* SAMPING-SAMPING - Tetap seperti sebelumnya, jangan diubah */
+                /* SAMPING-SAMPING */
                 .preview-main .photo-strip.layout-lshape {
                     transform: scale(0.70);
                     transform-origin: center center;
@@ -2130,7 +2161,7 @@ export default function MulaiPage() {
                 }
 
                 /* =====================================================
-                   PHOTO STRIP - BASE (existing)
+                   PHOTO STRIP - BASE
                 ===================================================== */
                 .photo-strip {
                     width: 230px;
@@ -2681,7 +2712,6 @@ export default function MulaiPage() {
                         flex-direction: column;
                     }
                     
-                    /* Mobile scale adjustment */
                     .preview-main .photo-strip:not(.layout-lshape) {
                         transform: scale(0.65);
                     }
@@ -2701,19 +2731,17 @@ export default function MulaiPage() {
                     }
 
                     .mood-title{
-                    font-size: 15px ;
+                        font-size: 15px ;
                     }
                     .editor-eyebrow{
-                    font-size: 10px ;
+                        font-size: 10px ;
                     }
                     .editor-welcome h1 {
-                    font-size: 20px;
-                }.editor-brand-name{
-                    font-size: 15px;
-                }
-
-
-
+                        font-size: 20px;
+                    }
+                    .editor-brand-name{
+                        font-size: 15px;
+                    }
 
                     .preview-main .photo-strip:not(.layout-lshape) {
                         transform: scale(0.55);
