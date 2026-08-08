@@ -94,9 +94,6 @@ export default function MulaiPage() {
     const [selectedFrameColor, setSelectedFrameColor] = useState<string>("#ffffff");
     const [caption, setCaption] = useState("Our Little Moments");
 
-    // Camera quality state
-    const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
-
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -105,14 +102,14 @@ export default function MulaiPage() {
     const capturedRef = useRef<{ [key: number]: boolean }>({});
 
     // =====================================================
-    // CAPTURE PHOTO - FULL HD QUALITY
+    // CAPTURE PHOTO - Mengikuti resolusi video asli
     // =====================================================
     const capturePhoto = (timestamp: number) => {
         if (!videoRef.current) return;
         const video = videoRef.current;
         const canvas = document.createElement("canvas");
         
-        // Gunakan resolusi video asli (1080p atau lebih tinggi)
+        // Gunakan resolusi video asli
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         
@@ -122,14 +119,14 @@ export default function MulaiPage() {
         ctx.scale(-1, 1);
         ctx.drawImage(video, 0, 0);
         
-        // Kualitas JPEG lebih tinggi (0.95)
+        // Kualitas JPEG tinggi
         const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
         setPhotos((prev) => [...prev, dataUrl]);
         console.log(`📸 Foto ${canvas.width}x${canvas.height} pada ${timestamp.toFixed(1)}s`);
     };
 
     // =====================================================
-    // START RECORDING - WITH HIGH QUALITY CAMERA
+    // START RECORDING - FULL HD CAMERA
     // =====================================================
     const startRecording = async () => {
         if (isRecording) return;
@@ -143,27 +140,32 @@ export default function MulaiPage() {
         setIsJogetMode(true);
 
         try {
-            // Request camera dengan kualitas tinggi (1080p / 4K)
-            const constraints = {
+            // =============================================
+            // REQUEST CAMERA FULL HD 1920x1080
+            // =============================================
+            const stream = await navigator.mediaDevices.getUserMedia({
                 video: {
-                    facingMode: facingMode,
-                    width: { ideal: 1920, min: 1280 },
-                    height: { ideal: 1080, min: 720 },
-                    aspectRatio: 1.7777777778,
-                    frameRate: { ideal: 30, max: 60 },
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 },
+                    frameRate: { ideal: 30 },
+                    facingMode: "user",
                 },
                 audio: false,
-            };
+            });
             
-            console.log('📷 Requesting camera with constraints:', constraints);
-            
-            const stream = await navigator.mediaDevices.getUserMedia(constraints);
             streamRef.current = stream;
             
-            // Log resolusi yang didapat
+            // =============================================
+            // CEK RESOLUSI YANG DIDAPAT
+            // =============================================
             const track = stream.getVideoTracks()[0];
             const settings = track.getSettings();
-            console.log(`✅ Camera active: ${settings.width}x${settings.height} @ ${settings.frameRate}fps`);
+            
+            console.log("📷 Resolusi kamera:", {
+                width: settings.width,
+                height: settings.height,
+                fps: settings.frameRate,
+            });
             
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
@@ -230,28 +232,8 @@ export default function MulaiPage() {
             animationRef.current = requestAnimationFrame(loop);
         } catch (err) {
             console.error("Camera error:", err);
-            // Fallback ke resolusi lebih rendah jika gagal
-            try {
-                const fallbackStream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 1280, height: 720 },
-                    audio: false,
-                });
-                streamRef.current = fallbackStream;
-                if (videoRef.current) {
-                    videoRef.current.srcObject = fallbackStream;
-                    await videoRef.current.play();
-                    setIsCameraReady(true);
-                }
-                if (audioRef.current) {
-                    audioRef.current.currentTime = 0;
-                    await audioRef.current.play();
-                }
-                setIsRecording(true);
-                // ... lanjutkan loop
-            } catch (fallbackErr) {
-                alert("Gagal akses kamera: " + err);
-                setIsRecording(false);
-            }
+            alert("Gagal akses kamera: " + err);
+            setIsRecording(false);
         }
     };
 
@@ -407,7 +389,7 @@ export default function MulaiPage() {
         );
     };
 
-    // Handle Download - dengan kualitas lebih tinggi
+    // Handle Download
     const handleDownload = () => {
         const stripElement = document.getElementById("photoStrip");
 
@@ -499,9 +481,8 @@ export default function MulaiPage() {
                     })
                 );
 
-                // Scale 4 untuk kualitas lebih tajam
                 const canvas = await html2canvas(clone, {
-                    scale: 4,
+                    scale: 3,
                     useCORS: true,
                     allowTaint: false,
                     backgroundColor: null,
