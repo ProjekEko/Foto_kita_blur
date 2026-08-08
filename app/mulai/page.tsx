@@ -66,13 +66,7 @@ const FRAME_COLORS = [
 ];
 
 // Caption presets per style
-const CAPTION_PRESETS = {
-    floral: ["Our Little Moments", "Beautiful Memories", "Bloom Together", "Made With Love", "Sweet Little Things"],
-    retro: ["GOOD TIMES", "Keep The Moment", "Photo Booth", "Best Day Ever", "Made To Remember"],
-    candy: ["SWEET MOMENTS", "Best Day", "Cutie Energy", "Too Cute", "Just Us"],
-    midnight: ["TONIGHT WAS SPECIAL", "After Dark", "One Night Only", "Midnight Memories", "Stay Up Forever"],
-};
-
+const CAPTION_PRESETS = { floral: [ "Just Us", "A Little Something", "For Keeps", "Soft Days", "Here & Now", ], retro: [ "Good Times", "Just Like That", "One For The Books", "Those Were The Days", "Keep This One", ], candy: [ "Just Us", "Sweet Stuff", "Good Mood", "A Little Fun", "Too Good", ], midnight: [ "After Hours", "Just Tonight", "Late Night", "One For Tonight", "Stay Awhile", ], };
 export default function MulaiPage() {
     const [isRecording, setIsRecording] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -501,13 +495,10 @@ export default function MulaiPage() {
                     {showEditor && (
                         <div className="editor-topbar">
                             <div className="editor-brand">
-                                <div className="editor-brand-mark">✦</div>
+                                {/* <div className="editor-brand-mark">✦</div> */}
                                 <div>
                                     <div className="editor-brand-name">
-                                        Foto Kita
-                                    </div>
-                                    <div className="editor-brand-sub">
-                                        tiga foto, satu cerita kecil 🤍
+                                        Foto Kita Blur ✌🏻
                                     </div>
                                 </div>
                             </div>
@@ -527,7 +518,7 @@ export default function MulaiPage() {
                                     }}
                                     className="editor-btn editor-btn-soft"
                                 >
-                                    ↩ Foto Lagi
+                                    Foto Lagi
                                 </button>
                                 <button
                                     onClick={handleDownload}
@@ -549,19 +540,14 @@ export default function MulaiPage() {
                                     <div className="editor-welcome">
                                         <div>
                                             <div className="editor-eyebrow">
-                                                YOUR LITTLE MOMENT ✦
+                                                HASIL FOTO
                                             </div>
                                             <h1>
-                                                Tiga foto.<br />
-                                                Satu cerita kecil. 🤍
+                                               Atur susunan, warna, dan tulisan <br /> bebas dah.
                                             </h1>
-                                            <p>
-                                                Pilih yang paling kamu suka.
-                                                Nggak perlu sempurna, yang penting kamu.
-                                            </p>
                                         </div>
                                         <div className="preview-badge">
-                                            ✦ hasil foto kamu
+                                            3 FOTO
                                         </div>
                                     </div>
                                     <div className="preview-main">
@@ -571,7 +557,7 @@ export default function MulaiPage() {
 
                                 <div className="bottom-tools">
                                     <div className="frame-box">
-                                        <h6>🎀 Pilih bingkainya</h6>
+                                        <h6>Pilih aja warnanya</h6>
                                         <div className="color-list">
                                             {FRAME_COLORS.map(({ color, name }) => (
                                                 <button
@@ -590,7 +576,7 @@ export default function MulaiPage() {
                                         </div>
                                     </div>
                                     <div className="caption-box">
-                                        <h6>💌 Kasih sedikit cerita</h6>
+                                        <h6>Kasih Caption Kalo Mau</h6>
                                         <textarea
                                             value={caption}
                                             onChange={(e) => setCaption(e.target.value)}
@@ -616,11 +602,10 @@ export default function MulaiPage() {
                                 {/* Layout */}
                                 <div className="side-card">
                                     <h5>
-                                        <span>🖼️</span>
                                         Susunan Foto
                                     </h5>
                                     <p className="side-hint">
-                                        Mau fotonya ngobrol seperti apa?
+                                        Pilih bentuknya.
                                     </p>
                                     <div className="option-grid">
                                         {[
@@ -684,11 +669,10 @@ export default function MulaiPage() {
                                 {/* Cover Style */}
                                 <div className="side-card">
                                     <h5>
-                                        <span>🌷</span>
-                                        Pilih Suasana
+                                        Gaya
                                     </h5>
                                     <p className="side-hint">
-                                        Sesuaikan sama mood kamu hari ini.
+                                        Pilih tampilannya.
                                     </p>
                                     <div className="option-grid">
                                         {Object.entries(COVER_STYLES).map(([key, style]) => (
@@ -711,11 +695,10 @@ export default function MulaiPage() {
                                 {/* Filter */}
                                 <div className="side-card">
                                     <h5>
-                                        <span>✨</span>
-                                        Bikin Mood
+                                        Efek
                                     </h5>
                                     <p className="side-hint">
-                                        Sedikit warna biar makin terasa.
+                                        Pilih tone fotonya.
                                     </p>
                                     <div className="option-grid">
                                         {Object.entries(FILTERS).map(([key, filter]) => (
@@ -741,10 +724,10 @@ export default function MulaiPage() {
                                 <div className="mood-row">
                                     <div>
                                         <div className="mood-title">
-                                            ✦ Foto Kita
+                                            Foto Kita Blur ✌🏻
                                         </div>
                                         <div className="mood-subtitle">
-                                            jangan terlalu serius, nanti malah bagus 😚
+                                            3 jepretan, kelar kok.
                                         </div>
                                     </div>
                                     <div className="mood-buttons">
@@ -752,14 +735,12 @@ export default function MulaiPage() {
                                             disabled
                                             className={`mood-button ${isJogetMode ? "active" : ""}`}
                                         >
-                                            <span>🪩</span>
                                             Joget dikit
                                         </button>
                                         <button
                                             disabled
                                             className={`mood-button ${!isJogetMode ? "active" : ""}`}
                                         >
-                                            <span>🫶</span>
                                             Bergaya
                                         </button>
                                     </div>
@@ -807,26 +788,23 @@ export default function MulaiPage() {
 
                                         {!isCameraReady && !isRecording && (
                                             <div className="camera-start">
-                                                <div className="camera-start-decoration">
+                                                {/* <div className="camera-start-decoration">
                                                     ✦
-                                                </div>
+                                                </div> */}
                                                 <div className="camera-start-emoji">
                                                     📸
                                                 </div>
                                                 <h2>
-                                                    Siap bikin foto lucu?
+                                                    Pas lagu nyebut “foto kita”...
                                                 </h2>
                                                 <p>
-                                                    Atur pose sedikit.
-                                                    <br />
-                                                    Senyum belakangan juga boleh.
+                                                    Jangan lupa langsung pose yaa!
                                                 </p>
                                                 <button
                                                     onClick={startRecording}
-                                                    className="start-camera-button"
+                                                    className="start-camera-button hover:bg-rose-600"
                                                 >
                                                     Mulai Foto
-                                                    <span>→</span>
                                                 </button>
                                             </div>
                                         )}
@@ -840,21 +818,18 @@ export default function MulaiPage() {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="camera-helper">
+                                    {/* <div className="camera-helper">
                                         {isRecording
-                                            ? "pose dulu... jangan kabur 😭"
+                                            ? "Bentar lagi jepret"
                                             : "kamera siap kapan kamu siap"}
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className="memory-section">
                                     <div className="memory-heading">
                                         <div>
                                             <div className="memory-title">
-                                                Sedikit kenangan
-                                            </div>
-                                            <div className="memory-subtitle">
-                                                satu per satu, jangan buru-buru 🤍
+                                                Hasil Fotonya Disinii
                                             </div>
                                         </div>
                                         <div className="memory-count">
@@ -878,14 +853,22 @@ export default function MulaiPage() {
                                                         </div>
                                                     </>
                                                 ) : (
+                                                    // <div className="memory-empty">
+                                                    //     <span>
+                                                    //         {index === 0
+                                                    //             // ? "☁️"
+                                                    //             : index === 1
+                                                    //             // ? "♡"
+                                                    //             // : "✦"
+                                                    //             }
+                                                    //     </span>
+                                                    //     <small>
+                                                    //         foto {index + 1}
+                                                    //     </small>
+                                                    // </div>
                                                     <div className="memory-empty">
-                                                        <span>
-                                                            {index === 0
-                                                                ? "☁️"
-                                                                : index === 1
-                                                                ? "♡"
-                                                                : "✦"}
-                                                        </span>
+                                                        <span></span>
+
                                                         <small>
                                                             foto {index + 1}
                                                         </small>
@@ -910,7 +893,7 @@ export default function MulaiPage() {
                                             Sebentar ya...
                                         </h3>
                                         <p>
-                                            Lagi nyusun foto-foto lucu kamu 🤍
+                                            Menyiapkan hasil foto...
                                         </p>
                                         <div className="processing-line">
                                             <div />
@@ -1005,7 +988,7 @@ export default function MulaiPage() {
                 }
 
                 .mood-title {
-                    font-size: 14px;
+                    font-size: 20px;
                     font-weight: 700;
                     color: #302a2c;
                 }
@@ -1045,7 +1028,7 @@ export default function MulaiPage() {
                 }
 
                 .mood-button:disabled.active {
-                    background: #332d2f;
+                    background: #e11d48;
                     color: white;
                     box-shadow: 0 5px 16px rgba(50,40,42,.16);
                 }
@@ -1181,6 +1164,7 @@ export default function MulaiPage() {
                     animation: cameraFloat 3s ease-in-out infinite;
                 }
 
+
                 @keyframes cameraFloat {
                     0%,100% { transform: translateY(0) rotate(-2deg); }
                     50% { transform: translateY(-6px) rotate(2deg); }
@@ -1191,13 +1175,13 @@ export default function MulaiPage() {
                     font-family: Georgia, serif;
                     font-size: 30px;
                     font-weight: 600;
-                    color: #393134;
+                    color: #000;
                     letter-spacing: -0.6px;
                 }
 
                 .camera-start p {
                     margin: 8px 0 22px;
-                    color: #95898c;
+                    color: #393134;
                     font-size: 13px;
                     line-height: 1.6;
                 }
@@ -1209,7 +1193,7 @@ export default function MulaiPage() {
                     gap: 12px;
                     padding: 13px 22px;
                     border-radius: 999px;
-                    background: #332d2f;
+                    background: #e11d48;
                     color: white;
                     font-family: inherit;
                     font-size: 13px;
@@ -1458,12 +1442,6 @@ export default function MulaiPage() {
                     color: #332d30;
                 }
 
-                .editor-brand-sub {
-                    margin-top: 2px;
-                    font-size: 11px;
-                    color: #a19698;
-                }
-
                 .editor-actions {
                     display: flex;
                     gap: 8px;
@@ -1485,12 +1463,12 @@ export default function MulaiPage() {
                 }
 
                 .editor-btn-soft {
-                    background: #f3eeee;
-                    color: #6f6266;
+                    background: #6f6266;
+                    color: #f3eeee;
                 }
 
                 .editor-btn-main {
-                    background: #332d2f;
+                    background: #e11d48;
                     color: white;
                     box-shadow: 0 7px 18px rgba(50,40,42,.14);
                 }
@@ -1507,7 +1485,7 @@ export default function MulaiPage() {
                 }
 
                 .editor-eyebrow {
-                    font-size: 9px;
+                    font-size: 12px;
                     font-weight: 800;
                     letter-spacing: 1.8px;
                     color: #b07d89;
@@ -1672,6 +1650,7 @@ export default function MulaiPage() {
                 .bottom-tools {
                     display: flex;
                     gap: 18px;
+                    margin-top: 15px;
                 }
 
                 .frame-box, .caption-box {
@@ -1722,6 +1701,7 @@ export default function MulaiPage() {
                     border: none;
                     outline: none;
                     background: #f7f3f0;
+                    color:#555;
                     border-radius: 10px;
                     padding: 10px 12px;
                     font-family: inherit;
@@ -2719,7 +2699,22 @@ export default function MulaiPage() {
                         height: 380px;
                         padding: 10px;
                     }
-                    
+
+                    .mood-title{
+                    font-size: 15px ;
+                    }
+                    .editor-eyebrow{
+                    font-size: 10px ;
+                    }
+                    .editor-welcome h1 {
+                    font-size: 20px;
+                }.editor-brand-name{
+                    font-size: 15px;
+                }
+
+
+
+
                     .preview-main .photo-strip:not(.layout-lshape) {
                         transform: scale(0.55);
                     }
