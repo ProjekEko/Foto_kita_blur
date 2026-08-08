@@ -63,6 +63,13 @@ const FRAME_COLORS = [
     { color: "#b7a5e6", name: "Lavender" },
     { color: "#9fc7d9", name: "Sky" },
     { color: "#9cc9b0", name: "Sage" },
+
+    { color: "#f2b5a7", name: "Peach" },
+    { color: "#c9b6a5", name: "Mushroom" },
+    { color: "#d8c4e8", name: "Lilac" },
+    { color: "#a8c8b8", name: "Mint" },
+    { color: "#f1d5a8", name: "Butter" },
+    { color: "#c5d0e6", name: "Periwinkle" },
 ];
 
 // Caption presets per style
@@ -900,9 +907,6 @@ export default function MulaiPage() {
 
                                 {processing && (
                                     <div className="processing-card">
-                                        <div className="processing-heart">
-                                            ♡
-                                        </div>
                                         <h3>
                                             Sebentar ya...
                                         </h3>
@@ -1543,6 +1547,7 @@ export default function MulaiPage() {
                     display: flex;
                     align-items: center;
                     gap: 7px;
+                    font-weight:600;
                     margin-bottom: 5px;
                 }
 
@@ -1683,7 +1688,7 @@ export default function MulaiPage() {
                 .color-list {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 8px;
+                    gap: 14px;
                 }
 
                 .color {
