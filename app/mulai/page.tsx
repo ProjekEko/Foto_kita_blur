@@ -63,7 +63,6 @@ const FRAME_COLORS = [
     { color: "#b7a5e6", name: "Lavender" },
     { color: "#9fc7d9", name: "Sky" },
     { color: "#9cc9b0", name: "Sage" },
-
     { color: "#f2b5a7", name: "Peach" },
     { color: "#c9b6a5", name: "Mushroom" },
     { color: "#d8c4e8", name: "Lilac" },
@@ -857,6 +856,18 @@ export default function MulaiPage() {
                                                 />
                                             </div>
                                         )}
+
+                                        {processing && (
+                                            <div className="camera-processing">
+                                                <div className="camera-processing-inner">
+                                                    <h3>Sebentar ya...</h3>
+                                                    <p>Menyiapkan hasil foto...</p>
+                                                    <div className="processing-line">
+                                                        <div />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -905,19 +916,6 @@ export default function MulaiPage() {
                                     <strong> Eko Haryadi</strong>
                                 </div>
 
-                                {processing && (
-                                    <div className="processing-card">
-                                        <h3>
-                                            Sebentar ya...
-                                        </h3>
-                                        <p>
-                                            Menyiapkan hasil foto...
-                                        </p>
-                                        <div className="processing-line">
-                                            <div />
-                                        </div>
-                                    </div>
-                                )}
                             </section>
 
                             <audio
@@ -946,52 +944,6 @@ export default function MulaiPage() {
                     padding-bottom: 30px;
                 }
 
-                .recording-intro {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 20px;
-                    margin-bottom: 18px;
-                }
-
-                .recording-brand {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                }
-
-                .recording-brand-icon {
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 14px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: linear-gradient(135deg, #f5d8df, #eadff4);
-                    color: #8f596b;
-                    font-size: 19px;
-                }
-
-                .recording-brand-name {
-                    font-size: 21px;
-                    font-weight: 700;
-                    color: #292527;
-                    letter-spacing: -0.4px;
-                }
-
-                .recording-brand-sub {
-                    margin-top: 2px;
-                    font-size: 12px;
-                    color: #9b8f91;
-                }
-
-                .recording-note {
-                    font-family: Georgia, serif;
-                    font-style: italic;
-                    font-size: 14px;
-                    color: #9b858b;
-                }
-
                 /* MOOD */
                 .mood-row {
                     display: flex;
@@ -1009,12 +961,6 @@ export default function MulaiPage() {
                     font-size: 20px;
                     font-weight: 700;
                     color: #302a2c;
-                }
-
-                .mood-subtitle {
-                    margin-top: 3px;
-                    font-size: 12px;
-                    color: #a19698;
                 }
 
                 .mood-buttons {
@@ -1053,10 +999,6 @@ export default function MulaiPage() {
 
                 .mood-button:disabled.active:hover {
                     transform: none;
-                }
-
-                .mood-button span {
-                    margin-right: 5px;
                 }
 
                 .mood-button:hover {
@@ -1169,12 +1111,6 @@ export default function MulaiPage() {
                     background: linear-gradient(180deg, rgba(247,237,238,.92), rgba(237,228,230,.95));
                 }
 
-                .camera-start-decoration {
-                    font-size: 20px;
-                    color: #aa7783;
-                    margin-bottom: 7px;
-                }
-
                 .camera-start-emoji {
                     font-size: 62px;
                     line-height: 1;
@@ -1225,10 +1161,6 @@ export default function MulaiPage() {
                     box-shadow: 0 14px 30px rgba(50,40,42,.22);
                 }
 
-                .start-camera-button span {
-                    font-size: 17px;
-                }
-
                 .camera-progress {
                     position: absolute;
                     bottom: 0;
@@ -1244,13 +1176,69 @@ export default function MulaiPage() {
                     transition: width .3s ease;
                 }
 
-                .camera-helper {
+                /* CAMERA PROCESSING OVERLAY */
+                .camera-processing {
+                    position: absolute;
+                    inset: 0;
+                    z-index: 30;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(247, 243, 240, 0.92);
+                    backdrop-filter: blur(10px);
+                    animation: processingFadeIn .35s ease;
+                }
+
+                .camera-processing-inner {
+                    width: min(320px, calc(100% - 40px));
+                    padding: 28px 24px;
                     text-align: center;
-                    margin-top: 10px;
+                    background: rgba(255,255,255,.88);
+                    border: 1px solid rgba(90,60,65,.07);
+                    border-radius: 24px;
+                    box-shadow: 0 18px 50px rgba(60,40,45,.10);
+                }
+
+                .camera-processing-inner h3 {
+                    margin: 0;
                     font-family: Georgia, serif;
-                    font-style: italic;
+                    font-size: 24px;
+                    font-weight: 600;
+                    color: #393134;
+                }
+
+                .camera-processing-inner p {
+                    margin: 7px 0 0;
+                    color: #9a8f91;
                     font-size: 13px;
-                    color: #9a8d90;
+                }
+
+                .camera-processing .processing-line {
+                    width: 150px;
+                    height: 4px;
+                    margin: 18px auto 0;
+                    overflow: hidden;
+                    border-radius: 999px;
+                    background: #eee5e5;
+                }
+
+                .camera-processing .processing-line div {
+                    width: 50%;
+                    height: 100%;
+                    border-radius: inherit;
+                    background: #b77f8b;
+                    animation: processingMove 1.2s ease-in-out infinite;
+                }
+
+                @keyframes processingFadeIn {
+                    from {
+                        opacity: 0;
+                        transform: scale(.98);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
                 }
 
                 /* MEMORY */
@@ -1274,12 +1262,6 @@ export default function MulaiPage() {
                     font-size: 14px;
                     font-weight: 700;
                     color: #332d30;
-                }
-
-                .memory-subtitle {
-                    margin-top: 3px;
-                    font-size: 12px;
-                    color: #a19698;
                 }
 
                 .memory-count {
@@ -1364,64 +1346,14 @@ export default function MulaiPage() {
                     color: #786d70;
                 }
 
-                .processing-card {
-                    margin-top: 18px;
-                    padding: 28px;
-                    text-align: center;
-                    background: rgba(255,255,255,.9);
-                    border-radius: 22px;
-                    box-shadow: 0 15px 40px rgba(60,40,45,.08);
-                }
-
-                .processing-heart {
-                    font-size: 30px;
-                    color: #b77f8b;
-                    animation: heartBeat 1.2s infinite;
-                }
-
-                @keyframes heartBeat {
-                    0%,100% { transform: scale(1); }
-                    50% { transform: scale(1.15); }
-                }
-
-                .processing-card h3 {
-                    margin-top: 8px;
-                    font-family: Georgia, serif;
-                    font-size: 21px;
-                    font-weight: 600;
-                    color: #393134;
-                }
-
-                .processing-card p {
-                    margin-top: 5px;
-                    color: #a09597;
-                    font-size: 12px;
-                }
-
-                .processing-line {
-                    width: 160px;
-                    height: 4px;
-                    margin: 17px auto 0;
-                    overflow: hidden;
-                    border-radius: 999px;
-                    background: #eee5e5;
-                }
-
-                .processing-line div {
-                    width: 50%;
-                    height: 100%;
-                    border-radius: inherit;
-                    background: #b77f8b;
-                    animation: processingMove 1.2s ease-in-out infinite;
-                }
-
+                /* ANIMASI UNTUK PROCESSING LINE */
                 @keyframes processingMove {
                     0% { transform: translateX(-100%); }
                     100% { transform: translateX(300%); }
                 }
 
                 /* =====================================================
-                   EDITOR — WARM / ROMANTIC
+                   EDITOR
                 ===================================================== */
                 .editor-topbar {
                     display: flex;
@@ -1440,17 +1372,6 @@ export default function MulaiPage() {
                     display: flex;
                     align-items: center;
                     gap: 11px;
-                }
-
-                .editor-brand-mark {
-                    width: 42px;
-                    height: 42px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 14px;
-                    background: #f4e2e6;
-                    color: #996475;
                 }
 
                 .editor-brand-name {
@@ -1490,10 +1411,6 @@ export default function MulaiPage() {
                     box-shadow: 0 7px 18px rgba(50,40,42,.14);
                 }
 
-                .preview-area {
-                    position: relative;
-                }
-
                 .editor-welcome {
                     display: flex;
                     align-items: flex-end;
@@ -1518,13 +1435,6 @@ export default function MulaiPage() {
                     letter-spacing: -0.8px;
                 }
 
-                .editor-welcome p {
-                    margin: 0;
-                    font-size: 12px;
-                    line-height: 1.6;
-                    color: #9c9194;
-                }
-
                 .preview-badge {
                     padding: 7px 11px;
                     border-radius: 999px;
@@ -1538,28 +1448,27 @@ export default function MulaiPage() {
                     border: 1px solid rgba(90,60,65,.055);
                     box-shadow: 0 10px 35px rgba(70,45,50,.045);
                     padding: 7px 20px 15px 15px;
-                    border-radius:5%;
+                    border-radius: 5%;
                 }
-                .side-card span{
-                    color: #000;}
 
                 .side-card h5 {
                     display: flex;
                     align-items: center;
                     gap: 7px;
-                    font-weight:600;
+                    font-weight: 600;
                     margin-bottom: 5px;
+                    color: #000000 !important;
                 }
 
                 .side-hint {
                     margin: 0 0 15px;
                     font-size: 11px;
                     line-height: 1.5;
-                    color: #a19698;
+                    color: #6f6f6f !important;
                 }
 
                 /* =====================================================
-                   PREVIEW MAIN - FIXED: CENTER CONTENT
+                   PREVIEW MAIN
                 ===================================================== */
                 .preview-main {
                     height: 540px;
@@ -1573,81 +1482,14 @@ export default function MulaiPage() {
                     position: relative;
                 }
 
-                /* VERTICAL LAYOUT - Rapi & klasik, Kayak dulu, Agak artsy */
                 .preview-main .photo-strip:not(.layout-lshape) {
                     transform: scale(0.86);
                     transform-origin: center center;
                 }
 
-                /* SAMPING-SAMPING */
                 .preview-main .photo-strip.layout-lshape {
                     transform: scale(0.70);
                     transform-origin: center center;
-                }
-
-                /* =====================================================
-                   HEADER - EXISTING (untuk fallback)
-                ===================================================== */
-                .header {
-                    background: #fff;
-                    border-radius: 20px;
-                    padding: 18px 28px;
-                    margin-bottom: 20px;
-                    box-shadow: 0 8px 25px rgba(0,0,0,0.04);
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    flex-wrap: wrap;
-                    gap: 15px;
-                }
-
-                .sebelah-kiri-ujung {
-                    display: flex;
-                    align-items: center;
-                    gap: 14px;
-                }
-
-                .logo-icon {
-                    width: 42px;
-                    height: 42px;
-                    border-radius: 12px;
-                    background: #d9d0c8;
-                }
-
-                .brand-name {
-                    font-size: 22px;
-                    font-weight: 600;
-                }
-
-                .sebelah-kanan-ujung {
-                    display: flex;
-                    gap: 10px;
-                    flex-wrap: wrap;
-                }
-
-                .header-button {
-                    padding: 10px 20px;
-                    border-radius: 999px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    border: none;
-                    transition: all 0.2s;
-                }
-
-                .header-button:hover {
-                    transform: scale(1.02);
-                    opacity: 0.9;
-                }
-
-                .restart {
-                    background: #e74c3c;
-                    color: white;
-                }
-
-                .download {
-                    background: #222;
-                    color: white;
                 }
 
                 /* =====================================================
@@ -1683,12 +1525,13 @@ export default function MulaiPage() {
                     margin-bottom: 10px;
                     font-size: 14px;
                     font-weight: 600;
+                    color: #000000 !important;
                 }
 
                 .color-list {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 14px;
+                    gap: 8px;
                 }
 
                 .color {
@@ -1718,7 +1561,7 @@ export default function MulaiPage() {
                     border: none;
                     outline: none;
                     background: #f7f3f0;
-                    color:#555;
+                    color: #555;
                     border-radius: 10px;
                     padding: 10px 12px;
                     font-family: inherit;
@@ -1774,6 +1617,10 @@ export default function MulaiPage() {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
                     gap: 12px;
+                }
+
+                .option-label {
+                    color: #000000 !important;
                 }
 
                 /* =====================================================
@@ -2612,28 +2459,6 @@ export default function MulaiPage() {
                     z-index: 2;
                 }
 
-                /* Judul section editor — hitam agar lebih terbaca */
-                .side-card h5,
-                .frame-box h6,
-                .caption-box h6 {
-                    color: #000000 !important;
-                }
-
-                /* Ikon di sebelah judul juga hitam */
-                .side-card h5 span {
-                    color: #000000 !important;
-                }
-
-                /* Label pilihan */
-                .option-label {
-                    color: #000000 !important;
-                }
-
-                /* Kalau ada teks bantuan di bawah judul, tetap dibuat sedikit soft */
-                .side-hint {
-                    color: #6f6f6f !important;
-                }
-
                 .photo-strip.style-midnight .star.s1 { top: 35px; left: 18px; }
                 .photo-strip.style-midnight .star.s2 { top: 110px; right: 15px; }
                 .photo-strip.style-midnight .star.s3 { bottom: 80px; left: 12px; }
@@ -2649,13 +2474,6 @@ export default function MulaiPage() {
                 }
 
                 @media (max-width: 768px) {
-                    .recording-intro {
-                        align-items: flex-start;
-                        flex-direction: column;
-                    }
-                    .recording-note {
-                        display: none;
-                    }
                     .mood-row {
                         align-items: flex-start;
                         flex-direction: column;
@@ -2716,16 +2534,16 @@ export default function MulaiPage() {
                         padding: 10px;
                     }
 
-                    .mood-title{
-                        font-size: 15px ;
+                    .mood-title {
+                        font-size: 15px;
                     }
-                    .editor-eyebrow{
-                        font-size: 10px ;
+                    .editor-eyebrow {
+                        font-size: 10px;
                     }
                     .editor-welcome h1 {
                         font-size: 20px;
                     }
-                    .editor-brand-name{
+                    .editor-brand-name {
                         font-size: 15px;
                     }
 
